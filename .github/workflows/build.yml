@@ -24,16 +24,8 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Create fresh Flutter project structure
-        run: |
-          # Создаем чистый проект, чтобы появились папки android/ и конфиги
-          flutter create . --org com.vector.app --project-name vector_flow_studio --platforms=android
-
-      - name: Overwrite main.dart with custom code
-        run: |
-          # Если твой файл main.dart лежит в корне или где-то еще, убедись, что он на месте, 
-          # либо скопируй его в lib/main.dart (если он уже в репозитории, шаг checkouts его сохранит).
-          ls -la lib/
+      - name: Create fresh project
+        run: flutter create . --org com.vector.app --project-name vector_flow_studio --platforms=android
 
       - name: Install dependencies
         run: flutter pub get
