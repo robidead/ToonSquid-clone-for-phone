@@ -1,20 +1,49 @@
-name: vector_flow_studio
-description: "A new Flutter project."
-publish_to: 'none'
-version: 1.0.0+1
+name: Build Flutter APK
 
-environment:
-  sdk: '>=3.0.0 <4.0.0'
+on:
+  push:
+    branches: [ main, master ]
 
-dependencies:
-  flutter:
-    sdk: flutter
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-flutter:
-  uses-material-design: true
-  
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Create fresh Flutter project structure
+        run: |
+          # Создаем чистый проект, чтобы появились папки android/ и конфиги
+          flutter create . --org com.vector.app --project-name vector_flow_studio --platforms=android
+
+      - name: Overwrite main.dart with custom code
+        run: |
+          # Если твой файл main.dart лежит в корне или где-то еще, убедись, что он на месте, 
+          # либо скопируй его в lib/main.dart (если он уже в репозитории, шаг checkouts его сохранит).
+          ls -la lib/
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK Release
+        run: flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+          
