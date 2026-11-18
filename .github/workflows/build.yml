@@ -8,9 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: ToonSquid-clone-for-phone
 
     steps:
       - name: Checkout repository
@@ -38,5 +35,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: ToonSquid-clone-for-phone/build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
           
